@@ -1,0 +1,35 @@
+generated: '2026-08-26'
+method: searched
+source: https://modifyhealth.com/llms.txt
+limit_count: 0
+note: >-
+  The provider documents THAT the surface is rate limited but publishes no number, no
+  window and no scope beyond "per IP". No RateLimit-* or Retry-After header was present on
+  an observed HTTP 200 from the MCP endpoint, so an agent gets no runtime budget signal -
+  it only learns it has exceeded the limit by receiving a 429. limit_count is an honest
+  zero: nothing numeric is published to record.
+limits:
+- scope: per-ip
+  surface: https://modifyhealth.com/api/ucp/mcp
+  window: not published
+  limit: not published
+  burst: not published
+  status_on_exhaustion: 429
+  documented_text: >-
+    "Respect rate limits. The MCP endpoint is rate-limited per IP. Back off on 429
+    responses."
+  docs: https://modifyhealth.com/llms.txt
+response_headers:
+  observed: []
+  probe: >-
+    POST tools/list to https://modifyhealth.com/api/ucp/mcp on 2026-08-26 returned HTTP
+    200 with content-type, x-shopify-ucp-mcp-api-version, x-request-id, server and
+    server-timing. No RateLimit-*, X-RateLimit-* or Retry-After header was returned.
+  note: >-
+    A 429 response was deliberately not provoked against a live production storefront, so
+    whether Retry-After is sent on exhaustion is untested.
+robots_txt:
+  url: https://modifyhealth.com/robots.txt
+  note: >-
+    The storefront serves a Shopify-default robots.txt with Disallow rules on checkout,
+    cart, account and search paths. It constrains crawlers, not the MCP endpoint.

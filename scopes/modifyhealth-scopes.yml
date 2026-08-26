@@ -1,0 +1,46 @@
+generated: '2026-08-26'
+method: probed
+source: https://modifyhealth.com/.well-known/openid-configuration
+note: >-
+  Read verbatim from scopes_supported in the OIDC discovery document served on
+  ModifyHealth's own host. The authorization server is Shopify's customer-account issuer
+  for shop 7887683702; ModifyHealth publishes no scope reference page of its own, so
+  there is no richer docs source to upgrade this from.
+schemes:
+- name: shopify-customer-account-oauth2
+  source: well-known/modifyhealth-openid-configuration.json
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://shopify.com/authentication/7887683702/oauth/authorize
+    tokenUrl: https://shopify.com/authentication/7887683702/oauth/token
+scopes:
+- scope: openid
+  description: OpenID Connect authentication; issues an id_token identifying the customer.
+  flows:
+  - authorizationCode
+  sources:
+  - well-known/modifyhealth-openid-configuration.json
+- scope: email
+  description: Access to the customer's email address and email_verified claim.
+  flows:
+  - authorizationCode
+  sources:
+  - well-known/modifyhealth-openid-configuration.json
+- scope: customer-account-api:full
+  description: >-
+    Full access to the Shopify Customer Account API for this shop - the authenticated
+    buyer's orders, addresses, subscriptions and profile.
+  flows:
+  - authorizationCode
+  sources:
+  - well-known/modifyhealth-openid-configuration.json
+- scope: customer-account-mcp-api:full
+  description: >-
+    Full access to the buyer-scoped Customer Account MCP API. This is the authenticated
+    counterpart to the anonymous UCP commerce MCP endpoint, and is what an agent would
+    need to act on a signed-in customer's own account rather than on a fresh cart.
+  flows:
+  - authorizationCode
+  sources:
+  - well-known/modifyhealth-openid-configuration.json
+scope_count: 4

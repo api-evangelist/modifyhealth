@@ -1,0 +1,144 @@
+generated: '2026-08-26'
+method: probed
+source: >-
+  mcp/modifyhealth-mcp-tools.json (live tools/list), llms/modifyhealth-llms.txt,
+  well-known/modifyhealth-ucp.json, and observed response headers on
+  https://modifyhealth.com/api/ucp/mcp
+scope: >-
+  Cross-cutting semantics of the ModifyHealth UCP/MCP commerce surface. ModifyHealth
+  publishes no OpenAPI and no REST developer program, so every convention below was read
+  from the live MCP tool schemas, the provider's own /llms.txt and /agents.md, or an
+  observed response header.
+authentication:
+  style: none-for-discovery
+  detail: >-
+    tools/list requires no credential. Tool invocation requires meta.ucp-agent.profile
+    (an agent profile URI) on every call. Buyer-scoped reads such as get_order are
+    backed by the Shopify customer-account OAuth surface.
+  see: authentication/modifyhealth-authentication.yml
+idempotency:
+  supported: true
+  mechanism: request-field
+  field: meta.idempotency-key
+  required_on:
+  - complete_checkout
+  scope: per checkout completion
+  retention: not documented
+  evidence: >-
+    complete_checkout inputSchema declares meta.properties["idempotency-key"] (string,
+    "An idempotency key for completing the checkout") and lists it in meta.required
+    alongside ucp-agent. It is REQUIRED, not optional. No other tool declares it.
+  note: >-
+    Idempotency is scoped narrowly and deliberately: it guards the single tool that moves
+    money. Cart and checkout mutation tools (create_cart, update_cart, create_checkout,
+    update_checkout) declare no idempotency key, so a retried mutation there is not
+    protected against duplication.
+pagination:
+  supported: unknown
+  detail: >-
+    No pagination parameters appear in any tool inputSchema, and the provider documents
+    none. search_catalog and lookup_catalog take no cursor, page or limit field.
+field_expansion:
+  supported: false
+metadata:
+  supported: true
+  detail: >-
+    Every tool requires a top-level meta object carrying meta.ucp-agent.profile. An
+    optional attribution object on cart tools carries referring_domain, click id and UTM
+    parameters forwarded to the cart for downstream reporting.
+request_tracing:
+  supported: true
+  header: x-request-id
+  observed: efe5587a-a22b-4958-86a7-d750d5fc9f1d-1787738778
+  detail: >-
+    Responses also carry a Server-Timing header with processing/db/fetch durations and a
+    requestID field.
+versioning:
+  scheme: date-based version train
+  current: '2026-04-08'
+  supported:
+  - '2026-04-08'
+  - '2026-01-23'
+  response_header: 'x-shopify-ucp-mcp-api-version: 2026-04-08'
+  discovery: https://modifyhealth.com/.well-known/ucp
+  see: lifecycle/modifyhealth-lifecycle.yml
+error_envelope:
+  format: json-rpc-2.0
+  shape: 'error: {code, message, data: {code, content, continue_url}}'
+  observed_example_code: -32001
+  see: errors/modifyhealth-problem-types.yml
+rate_limit_signaling:
+  documented: true
+  headers_observed: none
+  detail: >-
+    The provider's own llms.txt states "The MCP endpoint is rate-limited per IP. Back off
+    on 429 responses." No RateLimit-* or Retry-After header was present on an observed
+    200 response, and no numeric limit is published.
+  see: rate-limits/modifyhealth-rate-limits.yml
+money_representation:
+  format: ISO 4217 minor units
+  shape: '{"amount": 2500, "currency": "USD"} is $25.00'
+  detail: >-
+    Stated verbatim in the description of every cart and checkout tool. Agents must
+    convert to major units before quoting a price to a buyer.
+dry_run_mode:
+  supported: false
+  note: >-
+    No sandbox, test mode or simulated-order facility is published. create_checkout
+    against the live endpoint operates on the real store.
+reversibility:
+  grade: verified
+  detail: >-
+    The write surface has explicit reversal tools, and the provider states a window for
+    the money-side reversal in its own published policy.
+  surfaces:
+  - write_operation: create_cart / update_cart
+    reversal: cancel_cart
+    reversal_type: cancel
+    window: >-
+      Any time before the cart is converted to a completed checkout. No time limit is
+      stated by the provider.
+    window_stated: false
+    docs: https://modifyhealth.com/agents.md
+  - write_operation: create_checkout / update_checkout
+    reversal: cancel_checkout
+    reversal_type: cancel
+    window: >-
+      Any time before complete_checkout succeeds. Once complete_checkout returns an order
+      id, cancel_checkout no longer applies and reversal moves to the refund path below.
+    window_stated: false
+    docs: https://modifyhealth.com/agents.md
+  - write_operation: complete_checkout
+    reversal: refund (out-of-band, human-mediated)
+    reversal_type: refund
+    window: >-
+      Seven days from receipt of delivery, on a first order, by telephone to customer
+      service at 888-766-3439. Refunds are discretionary and case-by-case; the provider
+      states it never accepts returns because the goods are perishable, and issues pro
+      rata refunds or credit for missing, damaged or incorrect items, sometimes requiring
+      photographic evidence.
+    window_stated: true
+    docs: https://modifyhealth.com/policies/refund-policy
+    note: >-
+      There is NO API or MCP tool for refunds. An agent that calls complete_checkout
+      cannot reverse the charge programmatically; reversal requires a phone call inside
+      the seven-day window.
+  - write_operation: weekly meal-plan subscription (change, skip, pause, cancel)
+    reversal: change / skip / pause / cancel the subscription
+    reversal_type: cancel
+    window: >-
+      Saturday 11:59pm ET. The provider states: "order changes and skip requests must be
+      placed by Saturday, 11:59pm ET to be applied to the upcoming week's delivery.
+      Requests made after that deadline will be applied to the following week." Plans are
+      weekly subscriptions with no commitment and can be changed, paused or cancelled at
+      any time by signing in to the account or calling 888-766-3439. Cancelling after the
+      weekly deadline still ships that week's delivery. Programs purchased as gifts cannot
+      be cancelled and are nonrefundable.
+    window_stated: true
+    docs: https://modifyhealth.com/pages/how-it-works#faq
+    also: https://modifyhealth.com/policies/refund-policy
+    note: >-
+      This is the sharpest reversal window the provider publishes, and it is the one an
+      agent managing a recurring order most needs. It is NOT exposed as an API or MCP
+      tool - there is no subscription tool in the 13-tool set. Reversal is a signed-in web
+      account action or a phone call.

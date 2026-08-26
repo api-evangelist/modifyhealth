@@ -1,23 +1,121 @@
 aid: modifyhealth
 name: ModifyHealth
-description: 'ModifyHealth is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'ModifyHealth is a US direct-to-consumer medically tailored meal delivery
+  company that ships fully prepared, dietitian-crafted meal programs nationwide with
+  free shipping. Its programs include Monash University Low FODMAP Certified, Mediterranean,
+  gluten-free, heart-friendly, diabetes-friendly, carb-conscious and GLP-1 support
+  plans, sold to consumers directly and to health plans, employers, case managers and
+  referring clinicians as a food-as-medicine benefit. The storefront runs on Shopify
+  and exposes a real machine surface for agents: a published /llms.txt and /agents.md,
+  a Universal Commerce Protocol (UCP) merchant profile at /.well-known/ucp, and an
+  unauthenticated MCP endpoint at /api/ucp/mcp serving 13 catalog, cart, checkout and
+  order tools. ModifyHealth publishes no developer program, no OpenAPI, and no SDKs.'
+image: https://modifyhealth.com/cdn/shop/files/MOD_Icon_Circle_KO_Green_400px_32x32.png?v=1623949729
 url: https://raw.githubusercontent.com/api-evangelist/modifyhealth/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-26'
 modified: '2026-08-26'
 tags:
-- Company
-apis: []
+- Health
+- Food and Beverage
+- Nutrition
+- Meal Delivery
+- Food as Medicine
+- eCommerce
+- Agentic Commerce
+- Universal Commerce Protocol
+- MCP
+- Direct to Consumer
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: modifyhealth-ucp-mcp
+  name: ModifyHealth UCP Commerce MCP
+  description: 'The agent-facing commerce surface for the ModifyHealth store. A Universal
+    Commerce Protocol (UCP) service exposed over MCP at https://modifyhealth.com/api/ucp/mcp,
+    serving 13 unauthenticated tools for catalog search and lookup, product detail,
+    cart create/update/get/cancel, and checkout create/update/get/complete/cancel. The
+    transport and tool contract are provided by the Shopify platform and served from
+    ModifyHealth''s own host and shop id (7887683702); the catalog, pricing and orders
+    are ModifyHealth''s.'
+  humanURL: https://modifyhealth.com/agents.md
+  baseURL: https://modifyhealth.com/api/ucp/mcp
+  tags:
+  - MCP
+  - Agentic Commerce
+  - Universal Commerce Protocol
+  - eCommerce
+  properties:
+  - type: MCPServer
+    url: mcp/modifyhealth-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/modifyhealth-tool-crosswalk.yml
+  - type: Documentation
+    url: https://modifyhealth.com/agents.md
 common:
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://modifyhealth.com/
+- type: Documentation
+  url: https://modifyhealth.com/agents.md
+- type: LLMsTxt
+  url: llms/modifyhealth-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: MCPServer
+  url: mcp/modifyhealth-mcp.yml
+- type: WellKnown
+  url: well-known/modifyhealth-well-known.yml
+- type: Authentication
+  url: authentication/modifyhealth-authentication.yml
+- type: OAuthScopes
+  url: scopes/modifyhealth-scopes.yml
+- type: Conventions
+  url: conventions/modifyhealth-conventions.yml
+- type: Idempotency
+  url: conventions/modifyhealth-conventions.yml
+- type: ErrorCatalog
+  url: errors/modifyhealth-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/modifyhealth-lifecycle.yml
+- type: Conformance
+  url: conformance/modifyhealth-conformance.yml
+- type: DataModel
+  url: data-model/modifyhealth-data-model.yml
+- type: RateLimits
+  url: rate-limits/modifyhealth-rate-limits.yml
+- type: Plans
+  url: plans/modifyhealth-plans-pricing.yml
+- type: DomainSecurity
+  url: security/modifyhealth-domain-security.yml
+- type: Packages
+  url: packages/modifyhealth-packages.yml
+- type: Pricing
+  url: https://modifyhealth.com/pages/how-it-works#faq
+- type: Blog
+  url: https://modifyhealth.com/blogs/blog
+- type: Support
+  url: https://modifyhealth.com/pages/how-can-we-help
+- type: SignUp
+  url: https://modifyhealth.com/account/login
+- type: TermsOfService
+  url: https://modifyhealth.com/policies/terms-of-service
+- type: PrivacyPolicy
+  url: https://modifyhealth.com/policies/privacy-policy
+x-enrichment:
+  date: '2026-08-26'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v1
+x-coverage:
+  state: covered
+  detail: >-
+    ModifyHealth publishes no OpenAPI and no developer program, but STEP 0b contract
+    discovery found a real, unauthenticated agent surface: /llms.txt and /agents.md name a
+    UCP merchant profile at /.well-known/ucp and an MCP endpoint at /api/ucp/mcp, and
+    tools/list returned HTTP 200 with 13 tools and full JSON Schema inputSchemas.
+  checked: '2026-08-26'

@@ -1,0 +1,47 @@
+generated: '2026-08-26'
+method: probed
+source: >-
+  https://modifyhealth.com/.well-known/ucp and the x-shopify-ucp-mcp-api-version response
+  header on https://modifyhealth.com/api/ucp/mcp
+versioning:
+  scheme: date-based version train
+  current: '2026-04-08'
+  supported:
+  - '2026-04-08'
+  - '2026-01-23'
+  negotiation: >-
+    The UCP discovery document publishes a supported_versions map pointing at a
+    per-version profile URL, and every MCP response echoes the served version in the
+    x-shopify-ucp-mcp-api-version header. Version support is therefore machine-readable
+    at both discovery and call time.
+  discovery: https://modifyhealth.com/.well-known/ucp
+  note: >-
+    The version train is the Universal Commerce Protocol's, carried by the Shopify
+    platform - it is not a version scheme ModifyHealth authors or controls.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: >-
+    No deprecation policy, Sunset header or RFC 8594 support was found. The presence of
+    an older supported version (2026-01-23) alongside the current one shows the surface
+    keeps at least one prior version live, but the provider states no policy about how
+    long, so this is an observation, not a commitment. NO Deprecation pointer emitted.
+sla:
+  url: null
+  uptime_target: null
+status_page:
+  url: null
+  note: >-
+    ModifyHealth publishes no status page. The underlying platform has one at
+    status.shopify.com, but that is Shopify's page for Shopify's availability, not a
+    ModifyHealth commitment, so NO StatusPage pointer is emitted.
+changelog:
+  url: null
+  note: No dated changelog for the commerce surface is published.
+deprecated_operations: []
+commercial_lifecycle:
+  note: >-
+    Distinct from the API surface. Meal programs are weekly-shipping subscriptions with a
+    per-week order cancellation deadline stated in the refund policy; see
+    conventions/modifyhealth-conventions.yml reversibility.
+  docs: https://modifyhealth.com/policies/refund-policy

@@ -1,0 +1,96 @@
+generated: '2026-08-26'
+method: derived
+source: mcp/modifyhealth-mcp-tools.json + llms/modifyhealth-llms.txt
+note: >-
+  ModifyHealth publishes NO OpenAPI, so there are no operationIds to bind against. The
+  REST side of this crosswalk is therefore the set of storefront JSON endpoints the
+  provider documents itself, verbatim, in its own /llms.txt under "Read-Only Browsing
+  (No Authentication Required)". Rows are bound by documented path pattern rather than
+  operationId, and confidence is set accordingly. Nothing here is inferred from a spec
+  that does not exist.
+surfaces:
+  mcp:
+    url: https://modifyhealth.com/api/ucp/mcp
+    gated: false
+    note: tools/list answers anonymously; tool CALLS require meta.ucp-agent.profile
+  openapi:
+    present: false
+    note: no OpenAPI/Swagger served on any ModifyHealth host (probed 2026-08-26)
+  rest_documented:
+    source: https://modifyhealth.com/llms.txt
+    note: Shopify storefront JSON endpoints named by the provider's own llms.txt
+  graphql:
+    present: false
+crosswalk:
+- tool: search_catalog
+  category: catalog
+  rest:
+  - GET /search?q={query}&type=product
+  - GET /collections/{handle}/products.json
+  binding: documented-path
+  confidence: medium
+  note: >-
+    Both surfaces search/list the same product catalog, but they are not equivalent.
+    search_catalog accepts structured buyer context (currency, country, intent,
+    eligibility) and returns UCP-shaped money objects in ISO 4217 minor units; the
+    storefront JSON endpoints return Shopify product records with decimal-string prices
+    and no buyer context.
+- tool: lookup_catalog
+  category: catalog
+  rest:
+  - GET /collections/all/products.json
+  binding: documented-path
+  confidence: low
+  note: >-
+    lookup_catalog resolves MULTIPLE products or variants by identifier in one call.
+    No documented storefront JSON endpoint takes a variant-id batch; the closest public
+    equivalent is fetching the collection listing and filtering client-side.
+- tool: get_product
+  category: catalog
+  rest:
+  - GET /products/{handle}.json
+  binding: documented-path
+  confidence: high
+  note: >-
+    Closest true equivalence in the set. Both return complete detail for one product.
+    The MCP tool keys on identifier (variant or product id); the JSON endpoint keys on
+    the storefront handle.
+mcp_only:
+- tool: create_cart
+  reason: No public storefront REST endpoint creates a server-side cart for an agent.
+- tool: get_cart
+  reason: Cart state is session/token scoped; no documented anonymous REST read.
+- tool: update_cart
+  reason: Cart mutation, including discount codes and fulfillment selection, is MCP-only.
+- tool: cancel_cart
+  reason: Cart teardown has no documented public REST equivalent.
+- tool: create_checkout
+  reason: Checkout creation is UCP/MCP-only; the human path is the hosted web checkout.
+- tool: get_checkout
+  reason: Checkout read is UCP/MCP-only.
+- tool: update_checkout
+  reason: Shipping address and fulfillment method selection is UCP/MCP-only.
+- tool: complete_checkout
+  reason: >-
+    Payment completion is UCP/MCP-only and is the only tool requiring
+    meta.idempotency-key. No public REST equivalent exists by design.
+- tool: cancel_checkout
+  reason: Checkout reversal is UCP/MCP-only.
+- tool: get_order
+  reason: >-
+    Order read requires buyer identity; the human path is the Shopify customer account
+    at /account/login, backed by the customer-account-api:full OAuth scope.
+rest_only:
+- surface: GET /sitemap.xml
+  reason: Site structure discovery; no agent tool covers it.
+- surface: GET /collections/all
+  reason: HTML collection browse; superseded for agents by search_catalog.
+- surface: GET /collections/{handle}
+  reason: HTML collection browse; superseded for agents by search_catalog.
+coverage:
+  tools_named: 13
+  tools_bound_to_documented_rest: 3
+  mcp_only: 10
+  rest_documented_total: 6
+  rest_documented_with_a_tool: 3
+  openapi_operations: 0

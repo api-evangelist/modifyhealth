@@ -1,0 +1,36 @@
+generated: '2026-08-26'
+method: searched
+source: >-
+  npm registry search, PyPI, RubyGems, and the GitHub org/repository search, all queried
+  2026-08-26
+package_count: 0
+packages: []
+note: >-
+  ModifyHealth publishes no client libraries in any language. This was checked, not
+  assumed. NO SDKs pointer emitted.
+searched:
+- registry: npm
+  query: https://registry.npmjs.org/-/v1/search?text=modifyhealth
+  result: 0 packages
+  version: null
+- registry: pypi
+  query: https://pypi.org/pypi/modifyhealth/json
+  result: 404 Not Found
+  version: null
+- registry: rubygems
+  query: https://rubygems.org/api/v1/gems/modifyhealth.json
+  result: not found
+  version: null
+- registry: github
+  query: https://api.github.com/orgs/modifyhealth
+  result: 404 - no GitHub organization
+  version: null
+- registry: github
+  query: https://api.github.com/search/repositories?q=modifyhealth
+  result: 0 repositories
+  version: null
+context: >-
+  Consistent with the rest of the profile: ModifyHealth ships an agent-callable commerce
+  endpoint inherited from its ecommerce platform, but runs no developer program of its
+  own, so there is nothing for an SDK to wrap. An agent integrates with this store using a
+  generic MCP client, not a ModifyHealth library.

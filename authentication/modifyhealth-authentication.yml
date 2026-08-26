@@ -1,0 +1,68 @@
+generated: '2026-08-26'
+method: probed
+source: >-
+  https://modifyhealth.com/.well-known/openid-configuration,
+  /.well-known/oauth-authorization-server, /.well-known/oauth-protected-resource,
+  and live tools/list on https://modifyhealth.com/api/ucp/mcp
+note: >-
+  Derived by hand from probed discovery documents, not from an OpenAPI: ModifyHealth
+  publishes no spec, so 0-working/derive-authentication.py had nothing to read. Two
+  distinct auth surfaces exist and must not be conflated.
+summary:
+  types:
+  - none
+  - oauth2
+  - openIdConnect
+  api_key_in: []
+  oauth2_flows:
+  - authorizationCode
+schemes:
+- name: ucp-mcp-anonymous
+  type: none
+  surface: https://modifyhealth.com/api/ucp/mcp
+  detail: >-
+    The MCP endpoint requires no credential. tools/list returns HTTP 200 with all 13
+    tools and full inputSchemas anonymously. Tool invocation requires a meta.ucp-agent
+    profile URI, which is an agent identity hint for UCP discovery, not a secret.
+  sources:
+  - mcp/modifyhealth-mcp-tools.json
+- name: shopify-customer-account-oidc
+  type: openIdConnect
+  openIdConnectUrl: https://modifyhealth.com/.well-known/openid-configuration
+  issuer: https://shopify.com/authentication/7887683702
+  detail: >-
+    Customer-account sign-in for the ModifyHealth storefront, delegated to Shopify as the
+    authorization server. The oauth-protected-resource document served at
+    modifyhealth.com names resource https://modifyhealth.com with authorization_servers
+    [https://shopify.com/authentication/7887683702], which is what makes the cross-domain
+    issuer legitimate rather than a mismatch.
+  sources:
+  - well-known/modifyhealth-openid-configuration.json
+  - well-known/modifyhealth-oauth-protected-resource.json
+- name: shopify-customer-account-oauth2
+  type: oauth2
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://shopify.com/authentication/7887683702/oauth/authorize
+    tokenUrl: https://shopify.com/authentication/7887683702/oauth/token
+    scope_count: 4
+  grant_types_supported:
+  - authorization_code
+  - refresh_token
+  - urn:ietf:params:oauth:grant-type:jwt-bearer
+  pkce:
+    supported: true
+    code_challenge_methods:
+    - S256
+  token_endpoint_auth_methods:
+  - client_secret_basic
+  - client_secret_post
+  id_token_signing_alg:
+  - RS256
+  jwks_uri: https://shopify.com/authentication/7887683702/.well-known/jwks.json
+  end_session_endpoint: https://shopify.com/authentication/7887683702/logout
+  bearer_methods_supported:
+  - header
+  sources:
+  - well-known/modifyhealth-oauth-authorization-server.json
+human_signin: https://modifyhealth.com/account/login

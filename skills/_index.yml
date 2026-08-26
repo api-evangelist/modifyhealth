@@ -1,0 +1,38 @@
+generated: '2026-08-26'
+method: generated
+source: >-
+  mcp/modifyhealth-mcp-tools.json (live tools/list) plus the provider's own published
+  agent instructions
+note: >-
+  Every operation named in these skills is a tool name read from a live tools/list
+  response, not invented. modifyhealth-agents.md is the PROVIDER's own document, saved
+  verbatim - it is not authored by API Evangelist.
+skills:
+- file: modifyhealth-agents.md
+  name: Agent Instructions - ModifyHealth (provider-published)
+  method: searched
+  source: https://modifyhealth.com/agents.md
+  api: mcp/modifyhealth-mcp.yml
+  note: >-
+    Saved verbatim, HTTP 200, 4338 bytes. The provider's canonical agent-facing
+    description of the store. Its content is mirrored at /llms.txt.
+- file: modifyhealth-browse-catalog.md
+  name: Browse the ModifyHealth meal catalog
+  method: generated
+  api: mcp/modifyhealth-mcp.yml
+  operations:
+  - search_catalog
+  - lookup_catalog
+  - get_product
+- file: modifyhealth-cart-and-checkout.md
+  name: Build a cart and complete a ModifyHealth checkout
+  method: generated
+  api: mcp/modifyhealth-mcp.yml
+  operations:
+  - create_cart
+  - update_cart
+  - get_cart
+  - create_checkout
+  - update_checkout
+  - get_checkout
+  - complete_checkout

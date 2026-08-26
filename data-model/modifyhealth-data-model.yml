@@ -1,0 +1,193 @@
+generated: '2026-08-26'
+method: derived
+source: mcp/modifyhealth-mcp-tools.json
+note: >-
+  Derived from the live MCP tool inputSchemas, NOT from an OpenAPI - ModifyHealth
+  publishes no spec. Every entity and field named below appears verbatim in a probed tool
+  schema. Response shapes are not modelled, because tools/list exposes inputSchema only;
+  this is the write/request-side model.
+entities:
+- name: cart
+  description: A server-side basket of line items with buyer, context, attribution, fulfillment and discount state.
+  tools:
+  - create_cart
+  - get_cart
+  - update_cart
+  - cancel_cart
+  identifier: id
+  fields:
+  - line_items
+  - buyer
+  - context
+  - attribution
+  - fulfillment
+  - discounts
+- name: checkout
+  description: A cart promoted to a purchasable state, carrying payment information and completing to an order.
+  tools:
+  - create_checkout
+  - get_checkout
+  - update_checkout
+  - complete_checkout
+  - cancel_checkout
+  identifier: id
+  fields:
+  - line_items
+  - buyer
+  - context
+  - payment
+  - fulfillment
+  - discounts
+- name: order
+  description: The record produced by a completed checkout.
+  tools:
+  - get_order
+  identifier: id
+- name: product
+  description: A ModifyHealth meal program or add-on item in the storefront catalog.
+  tools:
+  - search_catalog
+  - lookup_catalog
+  - get_product
+  identifier: id
+- name: product_variant
+  description: A purchasable configuration of a product. Line items reference variants, not products.
+  identifier: item.id
+  evidence: 'line_items[].item.id described as "The Product Variant ID to add or update."'
+- name: line_item
+  description: A quantity of one product variant inside a cart or checkout.
+  identifier: id
+  fields:
+  - id
+  - quantity
+  - item.id
+- name: buyer
+  description: Contact identity attached to a cart or checkout.
+  fields:
+  - email
+  - phone_number
+- name: destination
+  description: A shipping address a fulfillment method delivers to.
+  fields:
+  - id
+  - first_name
+  - last_name
+  - phone_number
+  - street_address
+  - extended_address
+  - address_locality
+  - address_region
+  - postal_code
+  - address_country
+- name: fulfillment_method
+  description: How a set of line items is delivered, with a selected destination and option groups.
+  fields:
+  - type
+  - line_item_ids
+  - selected_destination_id
+  - destinations
+  - groups
+- name: discount
+  description: Promo codes applied to a cart or checkout.
+  fields:
+  - codes
+- name: context
+  description: Provisional localization and pricing hints superseded by authoritative data.
+  fields:
+  - address_country
+  - address_region
+  - postal_code
+  - intent
+  - language
+  - currency
+  - eligibility
+- name: attribution
+  description: Marketing attribution forwarded to the cart for downstream reporting.
+  fields:
+  - referring_domain
+  - click_id_tag
+  - click_id_value
+  - activity_id_tag
+  - activity_id_value
+  - utm_campaign
+  - utm_source
+  - utm_medium
+  - utm_content
+  - utm_term
+- name: ucp_agent
+  description: The calling agent's identity, required on every tool invocation.
+  fields:
+  - profile
+relationships:
+- from: cart
+  to: line_item
+  type: has_many
+  via: line_items
+- from: line_item
+  to: product_variant
+  type: belongs_to
+  via: item.id
+- from: product_variant
+  to: product
+  type: belongs_to
+  via: catalog identifier
+- from: cart
+  to: buyer
+  type: has_one
+  via: buyer
+- from: cart
+  to: context
+  type: has_one
+  via: context
+- from: cart
+  to: attribution
+  type: has_one
+  via: attribution
+- from: cart
+  to: fulfillment_method
+  type: has_many
+  via: fulfillment.methods
+- from: cart
+  to: discount
+  type: has_one
+  via: discounts
+- from: checkout
+  to: line_item
+  type: has_many
+  via: line_items
+- from: checkout
+  to: buyer
+  type: has_one
+  via: buyer
+- from: checkout
+  to: fulfillment_method
+  type: has_many
+  via: fulfillment.methods
+- from: checkout
+  to: discount
+  type: has_one
+  via: discounts
+- from: fulfillment_method
+  to: destination
+  type: has_many
+  via: destinations
+- from: fulfillment_method
+  to: destination
+  type: has_one
+  via: selected_destination_id
+- from: fulfillment_method
+  to: line_item
+  type: has_many
+  via: line_item_ids
+- from: checkout
+  to: order
+  type: has_one
+  via: complete_checkout result
+constraints:
+- >-
+  Fulfillment is single-destination: the UCP profile declares
+  allows_multi_destination.shipping false and allows_method_combinations [["shipping"]],
+  so a cart cannot split across addresses or combine shipping with another method.
+- >-
+  Money on every entity is an integer in ISO 4217 minor units paired with a currency
+  code.

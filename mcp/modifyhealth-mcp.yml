@@ -1,0 +1,154 @@
+generated: '2026-08-26'
+method: probed
+source: https://modifyhealth.com/api/ucp/mcp (JSON-RPC tools/list, HTTP 200, unauthenticated)
+status: published
+note: 'Discovered from ModifyHealth''s own published /llms.txt and /agents.md, which name the UCP discovery
+  document and the MCP endpoint. The tool contract and transport are supplied by the Shopify platform
+  (response header x-shopify-ucp-mcp-api-version: 2026-04-08) but the endpoint is served from ModifyHealth''s
+  host for ModifyHealth''s shop (id 7887683702, merchant_origin modifyhealth.com) and operates on ModifyHealth''s
+  catalog, carts and orders. tools/list answers anonymously, so every inputSchema below was read live,
+  not inferred.'
+deployment:
+  mode: remote
+  endpoint: https://modifyhealth.com/api/ucp/mcp
+  auth: none
+  verified: probed
+  note: Anonymous tools/list returns HTTP 200 with all 13 tools and full inputSchemas. Tool INVOCATION
+    additionally requires meta.ucp-agent.profile (an agent profile URI); calling without it returns JSON-RPC
+    error -32001 invalid_profile_url. Buyer payment on complete_checkout requires contemporaneous human
+    approval per the provider's own agents.md.
+server:
+  name: modifyhealth-ucp
+  transport: http
+  protocol: MCP over JSON-RPC 2.0
+  url: https://modifyhealth.com/api/ucp/mcp
+  alternate_url: https://modifyhealth.myshopify.com/api/ucp/mcp
+  ucp_version: '2026-04-08'
+  ucp_supported_versions:
+  - '2026-04-08'
+  - '2026-01-23'
+  discovery: https://modifyhealth.com/.well-known/ucp
+  openrpc_schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
+tool_count: 13
+tools:
+- name: get_checkout
+  description: Returns details about the checkout, including line items, totals, and any applicable discounts
+    or taxes.
+  required:
+  - meta
+  - id
+  top_level_params:
+  - meta
+  - id
+- name: create_checkout
+  description: Creates a checkout. Returns checkout details, including line items, totals, and any applicable
+    discounts or taxes.
+  required:
+  - meta
+  - checkout
+  top_level_params:
+  - meta
+  - checkout
+- name: update_checkout
+  description: Updates a checkout. Returns checkout details, including line items, totals, and any applicable
+    discounts or taxes.
+  required:
+  - meta
+  - checkout
+  - id
+  top_level_params:
+  - meta
+  - checkout
+  - id
+- name: complete_checkout
+  description: Completes a checkout and returns the checkout result. Returns details about the completed
+    checkout, including order ID, Thank You Page URL, or any errors encountered.
+  required:
+  - meta
+  - id
+  - checkout
+  top_level_params:
+  - meta
+  - checkout
+  - id
+- name: cancel_checkout
+  description: Cancels a checkout.
+  required:
+  - meta
+  - id
+  top_level_params:
+  - meta
+  - id
+- name: get_cart
+  description: Get the cart contents
+  required:
+  - meta
+  - id
+  top_level_params:
+  - meta
+  - id
+- name: create_cart
+  description: Creates a new cart
+  required:
+  - meta
+  - cart
+  top_level_params:
+  - meta
+  - cart
+- name: update_cart
+  description: Perform updates to a cart.
+  required:
+  - meta
+  - cart
+  - id
+  top_level_params:
+  - meta
+  - cart
+  - id
+- name: cancel_cart
+  description: Cancels a cart.
+  required:
+  - meta
+  - id
+  top_level_params:
+  - meta
+  - id
+- name: get_order
+  description: Get the details of an order
+  required:
+  - meta
+  - id
+  top_level_params:
+  - meta
+  - id
+- name: search_catalog
+  description: Search for products from the online store, hosted on Shopify.
+  required:
+  - meta
+  - catalog
+  top_level_params:
+  - meta
+  - catalog
+- name: lookup_catalog
+  description: Look up multiple products or variants by identifier.
+  required:
+  - meta
+  - catalog
+  top_level_params:
+  - meta
+  - catalog
+- name: get_product
+  description: Retrieve complete product detail by identifier. Returns a singular product
+  required:
+  - meta
+  - catalog
+  top_level_params:
+  - meta
+  - catalog
+x-evidence:
+  fetched: '2026-08-26'
+  url: https://modifyhealth.com/api/ucp/mcp
+  http_status: 200
+  content_type: application/json; charset=utf-8
+  response_header: 'x-shopify-ucp-mcp-api-version: 2026-04-08'
+  raw: mcp/modifyhealth-mcp-tools.json

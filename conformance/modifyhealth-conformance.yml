@@ -1,0 +1,103 @@
+generated: '2026-08-26'
+method: probed
+source: >-
+  well-known/modifyhealth-ucp.json, well-known/modifyhealth-openid-configuration.json,
+  well-known/modifyhealth-oauth-protected-resource.json, mcp/modifyhealth-mcp-tools.json
+standards:
+- id: ucp-universal-commerce-protocol
+  conforms: true
+  version: '2026-04-08'
+  evidence: >-
+    /.well-known/ucp declares ucp.version 2026-04-08, a supported_versions map, a
+    dev.ucp.shopping service with transport "mcp", and the capability set
+    dev.ucp.shopping.{checkout,cart,fulfillment,discount,order,catalog.search,
+    catalog.lookup} each bound to a published ucp.dev schema URL.
+  spec: https://ucp.dev/2026-04-08/specification/overview/
+- id: mcp-model-context-protocol
+  conforms: true
+  evidence: >-
+    POST tools/list to https://modifyhealth.com/api/ucp/mcp returns HTTP 200 with a
+    JSON-RPC 2.0 result carrying 13 tools, each with a name, description and a
+    2020-12 JSON Schema inputSchema.
+- id: json-rpc-2.0
+  conforms: true
+  evidence: request/response envelopes carry jsonrpc "2.0", id, and result or error
+- id: json-schema-2020-12
+  conforms: true
+  evidence: >-
+    every tool inputSchema declares
+    $schema https://json-schema.org/draft/2020-12/schema
+- id: oidc-discovery
+  conforms: true
+  evidence: >-
+    /.well-known/openid-configuration returns a complete OIDC provider metadata document
+    with issuer, authorization_endpoint, token_endpoint, jwks_uri, response_types,
+    subject_types and id_token signing algorithms.
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: true
+  evidence: /.well-known/oauth-authorization-server returns RFC 8414 metadata
+- id: rfc9728-oauth-protected-resource-metadata
+  conforms: true
+  evidence: >-
+    /.well-known/oauth-protected-resource returns {resource, authorization_servers,
+    bearer_methods_supported}, the RFC 9728 shape that binds this resource to the Shopify
+    authorization server.
+- id: rfc7636-pkce
+  conforms: true
+  evidence: code_challenge_methods_supported ["S256"] in the OIDC document
+- id: iso4217-minor-units
+  conforms: true
+  evidence: >-
+    every cart and checkout tool description specifies money as an integer amount in the
+    currency's ISO 4217 minor units paired with a currency code
+- id: bcp47-language-tags
+  conforms: true
+  evidence: context.language declared as "Language tag in IETF BCP 47 format"
+- id: idempotency-key
+  conforms: true
+  evidence: >-
+    complete_checkout requires meta["idempotency-key"]; see
+    conventions/modifyhealth-conventions.yml
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: errors are JSON-RPC error members, not application/problem+json
+- id: openapi
+  conforms: false
+  evidence: no OpenAPI or Swagger document served on any ModifyHealth host
+- id: asyncapi
+  conforms: false
+  evidence: no event, streaming or webhook surface published
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on both hosts
+- id: a2a-agent-card
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json and /.well-known/agent.json both return 404 on both
+    hosts
+domain_standard:
+  id: ucp-universal-commerce-protocol
+  market: agentic commerce / retail checkout
+  declared: true
+  where: https://modifyhealth.com/.well-known/ucp
+  detail: >-
+    This is a contract-level declaration, not a marketing claim. The merchant profile
+    names the reverse-domain capability identifiers dev.ucp.shopping.checkout,
+    dev.ucp.shopping.cart, dev.ucp.shopping.fulfillment, dev.ucp.shopping.discount,
+    dev.ucp.shopping.order, dev.ucp.shopping.catalog.search and
+    dev.ucp.shopping.catalog.lookup, plus the Shopify extension dev.shopify.catalog, and
+    binds each to a versioned ucp.dev JSON Schema. Payment handlers are declared the same
+    way (com.google.pay, dev.shopify.card, dev.shopify.shop_pay). An agent that already
+    speaks UCP can transact with this store with no bespoke connector.
+  note: >-
+    Conformance here is inherited from the Shopify platform rather than independently
+    implemented by ModifyHealth. It is nonetheless served from ModifyHealth's host for
+    ModifyHealth's shop and is genuinely callable, which is what the check measures.
+compliance_program:
+  published: false
+  note: >-
+    ModifyHealth publishes no trust center and names no certification (SOC 2, ISO 27001,
+    HIPAA, PCI DSS). probe-security-programs.py returned vdp=none trust=none on
+    2026-08-26. NO Compliance pointer emitted. Worth noting given the company sells into
+    health plans and case managers, where a buyer would normally expect a stated HIPAA
+    posture.

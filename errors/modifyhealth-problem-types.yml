@@ -1,0 +1,58 @@
+generated: '2026-08-26'
+method: probed
+source: >-
+  observed JSON-RPC error response from https://modifyhealth.com/api/ucp/mcp plus
+  llms/modifyhealth-llms.txt
+format: json-rpc-2.0
+note: >-
+  NOT RFC 9457. ModifyHealth publishes no OpenAPI and no error reference page, so this
+  catalog records only what was observed on the wire or stated by the provider. It is
+  deliberately short: it is not a claim that these are the only errors the surface can
+  return, and no error codes have been invented to fill it out.
+envelope:
+  transport: JSON-RPC 2.0 over HTTP POST
+  http_status_on_error: 200
+  shape:
+    jsonrpc: '2.0'
+    id: <request id>
+    error:
+      code: <JSON-RPC integer code>
+      message: <human readable string>
+      data:
+        code: <machine readable slug>
+        content: <detail string>
+        continue_url: <URL for a human to finish the task in a browser>
+  note: >-
+    The endpoint returns HTTP 200 with an error member rather than an HTTP error status,
+    so an agent MUST inspect the body and cannot rely on the status code alone. The
+    continue_url field is a recovery affordance - it hands the buyer a browser URL when
+    the agent path fails.
+problems:
+- code: -32001
+  data_code: invalid_profile_url
+  title: UCP discovery failed
+  detail: 'Unable to fetch agent profile: Missing profile uri'
+  cause: >-
+    The request omitted meta.ucp-agent.profile, or the supplied profile URI could not be
+    fetched.
+  remediation: >-
+    Supply meta.ucp-agent.profile on every tool call with a resolvable agent profile URI.
+  observed: true
+  evidence: 'POST tools/call without meta on 2026-08-26 returned this body verbatim'
+- http_status: 429
+  title: Rate limited
+  detail: The MCP endpoint is rate-limited per IP.
+  cause: Too many requests from one source IP.
+  remediation: Back off and retry.
+  observed: false
+  evidence: >-
+    Stated by the provider in https://modifyhealth.com/llms.txt ("Respect rate limits.
+    The MCP endpoint is rate-limited per IP. Back off on 429 responses."). Not reproduced
+    - deliberately not triggered against a live production store.
+- http_status: 404
+  title: Not found
+  detail: Branded storefront 404 page, 4264 bytes of HTML.
+  cause: Unserved path on the storefront host.
+  remediation: n/a
+  observed: true
+  evidence: 'observed on /.well-known/security.txt and /.well-known/agent-card.json'

@@ -1,0 +1,59 @@
+generated: '2026-08-26'
+method: searched
+source: live probes of /.well-known/* on both ModifyHealth storefront hosts
+note: >-
+  ModifyHealth's storefront runs on Shopify, and the served .well-known surface is the
+  Shopify-provided customer-account OIDC/OAuth discovery set plus the Universal Commerce
+  Protocol merchant profile. Every document below was fetched from a ModifyHealth host
+  and describes ModifyHealth's own shop (shop id 7887683702, merchant_origin
+  modifyhealth.com); the OAuth issuer is delegated to shopify.com, which the
+  oauth-protected-resource document states explicitly. The 404 bodies are the store's
+  branded HTML error page (4,264 bytes), not a soft-200 catch-all: the host returns a
+  real 404 status for unserved paths, so the negatives below are trustworthy.
+hit_count: 4
+hosts:
+- host: https://modifyhealth.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: modifyhealth-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: modifyhealth-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: modifyhealth-oauth-protected-resource.json
+  - path: /.well-known/ucp
+    status: 200
+    file: modifyhealth-ucp.json
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://www.modifyhealth.com
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: modifyhealth-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: modifyhealth-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: modifyhealth-oauth-protected-resource.json
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404

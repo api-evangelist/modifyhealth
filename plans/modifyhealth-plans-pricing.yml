@@ -1,0 +1,77 @@
+generated: '2026-08-26'
+method: probed
+source: https://modifyhealth.com/collections/all/products.json
+api_access:
+  plan_count: 0
+  note: >-
+    ModifyHealth publishes NO API access plans, no developer tiers, no metered pricing and
+    no key issuance. The UCP/MCP commerce endpoint at /api/ucp/mcp is open and
+    unauthenticated at no cost - there is nothing to buy to call it. This is a zero by
+    design, not an omission: the surface exists to sell food, and the thing that is priced
+    is the food.
+commercial_offering:
+  kind: physical product catalog
+  note: >-
+    What an agent actually transacts against. Prices below are read from the storefront's
+    machine-readable catalog endpoint, are USD, and were live on 2026-08-26. This is the
+    first page of the catalog (30 product records); it is not the complete SKU list.
+  currency: USD
+  shipping: Free shipping to the Continental United States. No P.O. boxes.
+  billing_period: >-
+    Per order, with multi-week programs shipping weekly for the program period. Weekly
+    deliveries are made on Friday.
+  tiers:
+  - name: 6 Dietitian-Crafted Low FODMAP Meals
+    price_high: '80.70'
+    price_low: '52.50'
+    note: two price points published for the same product title
+  - name: 6 Dietitian-Crafted Mediterranean Meals
+    price_high: '80.70'
+    price_low: '52.50'
+  - name: 6 Dietitian-Crafted GLP-1 Support Meals
+    price_high: '80.70'
+    price_low: '52.50'
+  add_ons:
+  - name: Additional Breakfasts
+    price: '7.90'
+  - name: Additional Lunches
+    price: '11.75'
+  - name: Additional Dinners
+    price: '11.75'
+  - name: Additional Entree
+    price: '11.75'
+  a_la_carte:
+    note: Individual entrees are listed at 20.00, with some carrying a second 10.00 price point.
+  published_unit_pricing:
+    source: https://modifyhealth.com/pages/how-it-works#faq
+    method: searched
+    note: >-
+      Stated in the provider's own FAQ: "Our freshly prepared meals are priced at $9.95 for
+      breakfasts and $13.45 for entrees. Sales tax may be included depending on your
+      state." These are the headline per-meal prices; the catalog endpoint above shows the
+      bundled and add-on SKUs that are actually purchasable.
+    breakfast: '9.95'
+    entree: '13.45'
+    currency: USD
+  subscription_terms:
+    model: weekly subscription, no commitment
+    plans_named:
+    - Low-FODMAP
+    - Gluten-free
+    - Mediterranean
+    - Heart-friendly
+    - Carb-conscious
+    - GLP-1 Support
+    options_per_plan: 2
+    change_deadline: Saturday 11:59pm ET for the upcoming week's delivery
+    cancel: >-
+      Change, pause, skip or cancel at any time via the signed-in account or by phone
+      (888-766-3439). No API or MCP tool exists for subscription management.
+    source: https://modifyhealth.com/pages/how-it-works#faq
+  b2b:
+    published_price: false
+    note: >-
+      B2B product records (B2B Meals, B2B Breakfasts, B2B Entrees) exist in the catalog
+      with a 0.00 placeholder price. Health-plan, employer and case-manager pricing is not
+      published; those routes are contact forms at /pages/contact-us-healthplans and
+      /pages/contact-us-employers.
