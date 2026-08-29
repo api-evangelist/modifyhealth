@@ -10,6 +10,17 @@ description: 'ModifyHealth is a US direct-to-consumer medically tailored meal de
   a Universal Commerce Protocol (UCP) merchant profile at /.well-known/ucp, and an
   unauthenticated MCP endpoint at /api/ucp/mcp serving 13 catalog, cart, checkout and
   order tools. ModifyHealth publishes no developer program, no OpenAPI, and no SDKs.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://modifyhealth.com/cdn/shop/files/MOD_Icon_Circle_KO_Green_400px_32x32.png?v=1623949729
 url: https://raw.githubusercontent.com/api-evangelist/modifyhealth/refs/heads/main/apis.yml
 x-type: company
