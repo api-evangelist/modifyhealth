@@ -34,6 +34,17 @@ tags:
 - Nutrition
 - Meal Delivery
 - Food as Medicine
+- E-Commerce
+- Agentic Commerce
+- Universal Commerce Protocol
+- MCP
+- Direct to Consumer
+tags_raw:
+- Health
+- Food and Beverage
+- Nutrition
+- Meal Delivery
+- Food as Medicine
 - eCommerce
 - Agentic Commerce
 - Universal Commerce Protocol
@@ -57,6 +68,11 @@ apis:
   humanURL: https://modifyhealth.com/agents.md
   baseURL: https://modifyhealth.com/api/ucp/mcp
   tags:
+  - MCP
+  - Agentic Commerce
+  - Universal Commerce Protocol
+  - E-Commerce
+  tags_raw:
   - MCP
   - Agentic Commerce
   - Universal Commerce Protocol
