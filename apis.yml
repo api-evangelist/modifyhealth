@@ -96,6 +96,9 @@ apis:
     url: mcp/modifyhealth-tool-crosswalk.yml
   - type: Documentation
     url: https://modifyhealth.com/agents.md
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: ucp
 common:
 - type: Website
   url: https://modifyhealth.com/
